@@ -7,12 +7,19 @@
                 </router-link>
             </div>
             <div class="nav-links">
-                <button class="nav-button" @click="showLoginModal = true">
-                    Login
-                </button>
-                <button class="nav-button" @click="showSignupModal = true">
-                    Sign Up
-                </button>
+                <template v-if="!isLoggedIn">
+                    <button class="nav-button" @click="showLoginModal = true">
+                        Login
+                    </button>
+                    <button class="nav-button" @click="showSignupModal = true">
+                        Sign Up
+                    </button>
+                </template>
+                <template v-else>
+                    <button class="nav-button" @click="handleLogout">
+                        Logout
+                    </button>
+                </template>
             </div>
         </div>
 
@@ -38,7 +45,7 @@
         </div>
 
         <!-- Signup Modal -->
-        <div v-if="showSignupModal" class="modal-overlay">
+        <div v-if="showLoginModal" class="modal-overlay">
             <div class="modal">
                 <div class="modal-header">
                     <h3>Sign Up</h3>
@@ -66,10 +73,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useUsers } from '@/api/usersapi';
+import homepage from '../view/HomePage.vue';
 
 export default defineComponent({
     name: 'nav-bar',
     setup() {
+        const { getUsers, verifyUser, users } = useUsers();
+        const isLoggedIn = ref(false);
+
         const showLoginModal = ref(false);
         const showSignupModal = ref(false);
         const loginEmail = ref('');
@@ -78,9 +90,21 @@ export default defineComponent({
         const signupEmail = ref('');
         const signupPassword = ref('');
 
-        const handleLogin = () => {
-            console.log('Login:', { email: loginEmail.value, password: loginPassword.value });
-            showLoginModal.value = false;
+        const handleLogin = async () => {
+            await getUsers(); // Fetch users first
+            const result = verifyUser(loginEmail.value, loginPassword.value);
+            
+            if (result.success) {
+                isLoggedIn.value = true;
+                showLoginModal.value = false;
+                homepage.currentimage.value = require('@/assets/blurryopeneye.jpg');
+                // Emit login event
+                window.dispatchEvent(new CustomEvent('login-status-changed', { 
+                    detail: { isLoggedIn: true } 
+                }));
+            } else {
+                alert(result.message);
+            }
         };
 
         const handleSignup = () => {
@@ -92,6 +116,16 @@ export default defineComponent({
             showSignupModal.value = false;
         };
 
+        const handleLogout = () => {
+            isLoggedIn.value = false;
+            
+            homepage.currentimage.value = require('@/assets/blurryclosedeye.jpg');
+            
+            window.dispatchEvent(new CustomEvent('login-status-changed', { 
+                detail: { isLoggedIn: false } 
+            }));
+        };
+
         return {
             showLoginModal,
             showSignupModal,
@@ -101,7 +135,9 @@ export default defineComponent({
             signupEmail,
             signupPassword,
             handleLogin,
-            handleSignup
+            handleSignup,
+            isLoggedIn,
+            handleLogout
         };
     }
 });

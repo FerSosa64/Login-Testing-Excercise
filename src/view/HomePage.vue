@@ -1,10 +1,15 @@
 <template>
   <div class="home">
-    <img class="centered-image" src="../assets/blurryclosedeye.jpg" alt="Blurry eye" />
+    <img class="centered-image" :src="currentimage" alt="Blurry eye" />
+    <img/>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, require } from 'vue';
+
+const currentimage = ref(require('@/assets/blurryclosedeye.jpg'));
+
 </script>
 
 <style scoped>

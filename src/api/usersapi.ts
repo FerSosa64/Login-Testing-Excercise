@@ -30,13 +30,27 @@ export function useUsers() {
                 })
             )
             users.value = userlist
-        }catch(err) {
+        } catch (err) {
             console.error(err);
+            error.value = 'Failed to fetch users';
         }
     }
 
-    function verifyUser(email: string, password: string) {
-        const user = users.value.find(user => user.email === email && user.password === password);
-        return user;
+    function verifyUser(email: string, password: string): { success: boolean, message: string, user?: User } {
+        const user = users.value.find(user => user.email === email);
+        if (!user) {
+            return { success: false, message: 'User not found' };
+        }
+        if (user.password !== password) {
+            return { success: false, message: 'Incorrect password' };
+        }
+        return { success: true, message: 'User verified', user };
+    }
+
+    return {
+        users,
+        error,
+        getUsers,
+        verifyUser
     }
 }
