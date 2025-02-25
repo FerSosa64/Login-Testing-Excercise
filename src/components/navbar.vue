@@ -45,7 +45,7 @@
         </div>
 
         <!-- Signup Modal -->
-        <div v-if="showLoginModal" class="modal-overlay">
+        <div v-if="showSignupModal" class="modal-overlay">
             <div class="modal">
                 <div class="modal-header">
                     <h3>Sign Up</h3>
@@ -74,7 +74,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useUsers } from '@/api/usersapi';
-import homepage from '../view/HomePage.vue';
 
 export default defineComponent({
     name: 'nav-bar',
@@ -97,7 +96,6 @@ export default defineComponent({
             if (result.success) {
                 isLoggedIn.value = true;
                 showLoginModal.value = false;
-                homepage.currentimage.value = require('@/assets/blurryopeneye.jpg');
                 // Emit login event
                 window.dispatchEvent(new CustomEvent('login-status-changed', { 
                     detail: { isLoggedIn: true } 
@@ -118,9 +116,7 @@ export default defineComponent({
 
         const handleLogout = () => {
             isLoggedIn.value = false;
-            
-            homepage.currentimage.value = require('@/assets/blurryclosedeye.jpg');
-            
+            // Emit logout event
             window.dispatchEvent(new CustomEvent('login-status-changed', { 
                 detail: { isLoggedIn: false } 
             }));

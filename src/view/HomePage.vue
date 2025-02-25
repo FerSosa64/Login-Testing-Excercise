@@ -1,15 +1,31 @@
 <template>
   <div class="home">
     <img class="centered-image" :src="currentimage" alt="Blurry eye" />
-    <img/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, require } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const currentimage = ref(require('@/assets/blurryclosedeye.jpg'));
+// Define the custom event interface
+interface LoginStatusEvent extends CustomEvent {
+  detail: {
+    isLoggedIn: boolean;
+  };
+}
 
+const currentimage = ref(new URL('@/assets/blurryclosedeye.jpg', import.meta.url).href);
+
+// Listen for login status changes
+onMounted(() => {
+  window.addEventListener('login-status-changed', ((event: LoginStatusEvent) => {
+    if (event.detail.isLoggedIn) {
+      currentimage.value = new URL('@/assets/blurryopeneye.jpg', import.meta.url).href;
+    } else {
+      currentimage.value = new URL('@/assets/blurryclosedeye.jpg', import.meta.url).href;
+    }
+  }));
+});
 </script>
 
 <style scoped>

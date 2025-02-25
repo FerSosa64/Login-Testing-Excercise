@@ -10,28 +10,50 @@ export interface User {
     password: string;
 }
 
+// Add interface for API response
+interface ApiUser {
+    id: number;
+    firstName: string;
+    email: string;
+    password: string;
+    // ... other properties from API that we don't need
+}
+
+interface ApiResponse {
+    users: ApiUser[];
+    total: number;
+    skip: number;
+    limit: number;
+}
+
 export function useUsers() {
     const users = ref<User[]>([]);
-    const error = ref<string | null>('');
+    const error = ref<string | null>(null);
 
     const getUsers = async () => {
         try {
-            const response = await axios.get(userapi);
-            const data = response.data.results
+            const response = await axios.get<ApiResponse>(userapi);
+            
+            // Map directly to our User interface
+            users.value = response.data.users.map(apiUser => ({
+                id: apiUser.id,
+                name: `${apiUser.firstName}`,
+                email: apiUser.email,
+                password: apiUser.password
+            }));
 
-            const userlist = await Promise.all(
-                data.map(async (user: any) => {
-                    return {
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                        password: user.password
-                    }
-                })
-            )
-            users.value = userlist
+            // Add verification logs
+            console.log('Total users fetched:', users.value.length);
+            console.log('First 3 users:', users.value.slice(0, 3));
+            console.table(users.value.map(user => ({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                password: user.password
+            }))); // Excluding password for security
+            
         } catch (err) {
-            console.error(err);
+            console.error('Error fetching users:', err);
             error.value = 'Failed to fetch users';
         }
     }
