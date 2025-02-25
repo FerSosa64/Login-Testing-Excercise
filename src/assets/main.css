@@ -1,0 +1,37 @@
+:root {
+    --primary-color: #bc3939;
+    --secondary-color: #575e35;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    
+  }
+  
+  h1 {
+    color: var(--secondary-color);
+  }
+  
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    margin: 10px 0;
+  }
+  
