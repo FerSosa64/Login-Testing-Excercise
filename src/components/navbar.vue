@@ -72,13 +72,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useUsers } from '@/api/usersapi';
 
 export default defineComponent({
     name: 'nav-bar',
     setup() {
-        const { getUsers, verifyUser, users } = useUsers();
+        const { getUsers, verifyUser, users, addUser } = useUsers();
         const isLoggedIn = ref(false);
 
         const showLoginModal = ref(false);
@@ -89,14 +89,18 @@ export default defineComponent({
         const signupEmail = ref('');
         const signupPassword = ref('');
 
+        // Load users when component mounts
+        onMounted(async () => {
+            await getUsers();
+            console.log('Users loaded on mount');
+        });
+
         const handleLogin = async () => {
-            await getUsers(); // Fetch users first
             const result = verifyUser(loginEmail.value, loginPassword.value);
             
             if (result.success) {
                 isLoggedIn.value = true;
                 showLoginModal.value = false;
-                // Emit login event
                 window.dispatchEvent(new CustomEvent('login-status-changed', { 
                     detail: { isLoggedIn: true } 
                 }));
@@ -110,13 +114,15 @@ export default defineComponent({
                 name: signupName.value,
                 email: signupEmail.value,
                 password: signupPassword.value
-            });
+            }); 
+            
+            addUser(signupName.value, signupEmail.value, signupPassword.value);
             showSignupModal.value = false;
+
         };
 
         const handleLogout = () => {
             isLoggedIn.value = false;
-            // Emit logout event
             window.dispatchEvent(new CustomEvent('login-status-changed', { 
                 detail: { isLoggedIn: false } 
             }));

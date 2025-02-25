@@ -18,8 +18,9 @@ const currentimage = ref(new URL('@/assets/blurryclosedeye.jpg', import.meta.url
 
 // Listen for login status changes
 onMounted(() => {
-  window.addEventListener('login-status-changed', ((event: LoginStatusEvent) => {
-    if (event.detail.isLoggedIn) {
+  window.addEventListener('login-status-changed', ((e: Event) => {
+    const event = e as CustomEvent;
+    if (event.detail?.isLoggedIn) {
       currentimage.value = new URL('@/assets/blurryopeneye.jpg', import.meta.url).href;
     } else {
       currentimage.value = new URL('@/assets/blurryclosedeye.jpg', import.meta.url).href;

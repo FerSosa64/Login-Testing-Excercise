@@ -45,17 +45,24 @@ export function useUsers() {
             // Add verification logs
             console.log('Total users fetched:', users.value.length);
             console.log('First 3 users:', users.value.slice(0, 3));
-            console.table(users.value.map(user => ({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                password: user.password
-            }))); // Excluding password for security
+            console.table(users.value);
             
         } catch (err) {
             console.error('Error fetching users:', err);
             error.value = 'Failed to fetch users';
         }
+    }
+
+    function addUser(name: string, email: string, password: string) {
+        const newUser: User = {
+            id: users.value.length + 1,
+            name,
+            email,
+            password
+        };
+        users.value.push(newUser);
+        console.log('New user added:', newUser);
+        console.table(users.value);
     }
 
     function verifyUser(email: string, password: string): { success: boolean, message: string, user?: User } {
@@ -73,6 +80,7 @@ export function useUsers() {
         users,
         error,
         getUsers,
-        verifyUser
+        verifyUser,
+        addUser
     }
 }
