@@ -16,7 +16,6 @@ interface ApiUser {
     firstName: string;
     email: string;
     password: string;
-    // ... other properties from API that we don't need
 }
 
 interface ApiResponse {
@@ -42,7 +41,7 @@ export function useUsers() {
                 password: apiUser.password
             }));
 
-            // Add verification logs
+            // verification logs
             console.log('Total users fetched:', users.value.length);
             console.log('First 3 users:', users.value.slice(0, 3));
             console.table(users.value);

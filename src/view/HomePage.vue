@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <img class="centered-image" :src="currentimage" alt="Blurry eye" />
+    <img class="centered-image" :src="currentimage" :alt="eyestate" />
+    <img/>
   </div>
 </template>
 
@@ -15,6 +16,7 @@ interface LoginStatusEvent extends CustomEvent {
 }
 
 const currentimage = ref(new URL('@/assets/blurryclosedeye.jpg', import.meta.url).href);
+let eyestate = "closed";
 
 // Listen for login status changes
 onMounted(() => {
@@ -22,8 +24,10 @@ onMounted(() => {
     const event = e as CustomEvent;
     if (event.detail?.isLoggedIn) {
       currentimage.value = new URL('@/assets/blurryopeneye.jpg', import.meta.url).href;
+      eyestate = "open";
     } else {
       currentimage.value = new URL('@/assets/blurryclosedeye.jpg', import.meta.url).href;
+      eyestate = "closed";
     }
   }));
 });
