@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.50.1",
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^22.13.5",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
@@ -24,6 +25,7 @@
     "@vue/cli-service": "~5.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
     "allure-playwright": "3.2.0",
+    "dotenv": "^16.4.7",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "json2md": "^2.0.2",
